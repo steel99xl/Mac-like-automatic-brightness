@@ -11,7 +11,7 @@ brightnessctl
 
 ```AnimationDelay```  Speed of the brightness animation, recomended screen refreshrate in seconds
 
-```MaxScreenBrightness``` The highest value your screen supports, check your /sys/class/backlight/{GPU_MAIN_SCREEN}/brightness
+```MaxScreenBrightness``` The highest value your screen supports, check your /sys/class/backlight/intel_backlight/brightness
 
 ```SensorDelay``` Time in seconds the script will wait to check the sensor for a luminess change
 
