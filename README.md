@@ -13,7 +13,7 @@ brightnessctl
 
 ```AnimationDelay```  Speed of the brightness animation(delay between each step), recomended screen refreshrate in seconds
 
-```MaxScreenBrightness``` The highest value your screen supports, check ```/sys/class/backlight/intel_backlight/brightness``` on framework laptops
+```MaxScreenBrightness``` The highest value your screen supports, check ```/sys/class/backlight/intel_backlight/max_brightness``` on framework laptops
 
 ```SensorDelay``` Time in seconds the script will wait to check the sensor for a luminess change after the animation (LevelSteps * AnimationDelay)
 
