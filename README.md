@@ -3,6 +3,8 @@ A simple script to provide a "Mac" like automatic brightness adjustemnt/ animati
 
 made for the FrameWork laptop
 
+read ```Configuration``` for detailed informatoion about what options you have to easily  customize/ adjust the bightness or animation speed
+
 ## Requires 
 brightnessctl
 
@@ -17,7 +19,7 @@ brightnessctl
 
 ```MinimunBrightness``` The minimum screen brightness, recomended minumim 001 so the backlight dosn't turn off
 
-```SensorToDisplayScale``` The ratio from sensor to screen brighness, recommended minimum 24  for 12th gen framework laptops. The script will limit the max values to MaxScreenBrighness
+```SensorToDisplayScale``` The ratio from sensor to screen brighness, recommended minimum 24  for 12th gen framework laptops. Increasing the value will give a brighter screen for the amount of light in the room/ enviroment
 
 ~~ Other things to note
 
