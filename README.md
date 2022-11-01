@@ -15,7 +15,7 @@ brightnessctl
 
 ```MaxScreenBrightness``` The highest value your screen supports, check ```/sys/class/backlight/intel_backlight/brightness``` on framework laptops
 
-```SensorDelay``` Time in seconds the script will wait to check the sensor for a luminess change
+```SensorDelay``` Time in seconds the script will wait to check the sensor for a luminess change after the animation (LevelSteps * AnimationDelay)
 
 ```MinimunBrightness``` The minimum screen brightness, recomended minumim 001 so the backlight dosn't turn off
 
