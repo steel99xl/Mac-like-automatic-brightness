@@ -7,9 +7,9 @@ made for the FrameWork laptop
 brightnessctl
 
 ## Configuring
-```LevelSteps```  Sets amount of brightness stesp, recomended to match refeshrate
+```LevelSteps```  Sets amount of brightness steps, recomended to match refeshrate
 
-```AnimationDelay```  Speed of the brightness animation, recomended screen refreshrate in seconds
+```AnimationDelay```  Speed of the brightness animation(how fast it goes between setps), recomended screen refreshrate in seconds
 
 ```MaxScreenBrightness``` The highest value your screen supports, check your /sys/class/backlight/intel_backlight/brightness
 
