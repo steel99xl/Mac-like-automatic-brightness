@@ -16,6 +16,15 @@ Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop senso
      11th Gen Intel | 0 - 3207633  | 1
      12th Gen Intel | 0 - 3878     | 25
 
+## Controls
+```/tmp/AB.stop  | Stops AutomaticScreenBrightness.sh```
+
+```/tmp/AB.start | Starts sopped AutomaticScreenBrightness.sh``` 
+
+```/tmp/AB.kill  | Kills AutomaticScreenBrightness.sh```
+
+when running you will see a ```AB.running``` file in ```/tmp```
+
 
 ## Configuring
 ```LevelSteps```  Sets amount of brightness steps, recomended to match refeshrate
