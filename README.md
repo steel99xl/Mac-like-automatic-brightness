@@ -19,7 +19,7 @@ Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop senso
 ## Controls
 ```/tmp/AB.stop  | Stops AutomaticBrightness.sh```
 
-```/tmp/AB.start | Starts sopped AutomaticBrightness.sh``` 
+```/tmp/AB.start | Starts stopped AutomaticBrightness.sh``` 
 
 ```/tmp/AB.kill  | Kills AutomaticBrightness.sh```
 
