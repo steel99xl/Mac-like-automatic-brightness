@@ -8,6 +8,15 @@ read ```Configuration``` for detailed informatoion about what options you have t
 ## Requires 
 brightnessctl
 
+## Non 12th Gen Intel Framework Owners
+Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop sensors, please see chart bellow
+
+
+           Type     |  Sensor Rnge | STDScale
+     11th Gen Intel | 0 - 3207633  | 1
+     12th Gen Intel | 0 - 3878     | 25
+
+
 ## Configuring
 ```LevelSteps```  Sets amount of brightness steps, recomended to match refeshrate
 
