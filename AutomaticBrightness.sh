@@ -9,44 +9,61 @@ MinimumBrightness=001
 
 SensorToDisplayScale=24
 
-while true; do
-Light=$(cat /sys/bus/iio/devices/iio\:device0/in_illuminance_raw)
+touch '/tmp/AB.running'
 
-CurrentBrightness=$(cat /sys/class/backlight/intel_backlight/brightness)
-
-
-Light=$(( $Light + $MinimumBrightness ))
-
-
-TempLight=$(($Light * $SensorToDisplayScale))
-
-if [[ $TempLight -gt $MaxScreenBrightness ]]
-then
-	NewLight=$MaxScreenBrightness
-else
-	NewLight=$TempLight
-fi
-
-DiffCount=$(( ($NewLight - $CurrentBrightness)/$LevelSteps ))
-
-for i in $(eval echo {1..$LevelSteps} )
+until [ -f /tmp/AB.kill ]
 do
-
-	NewLight=$(( $DiffCount ))
-
-	if [[ $NewLight -lt 0 ]]
+	if [[ -f /tmp/AB.stop ]]
 	then
-	NewLight=$( echo "$NewLight" | awk -F "-" {'print$2'})
-	NewLight=$(echo $NewLight-)
+		rm '/tmp/AB.stop'
+		rm '/tmp/AB.running'
+
+		until [[ -f /tmp/AB.start ]]
+		do
+			sleep 10
+		done
+		rm '/tmp/AB.start'
+		touch '/tmp/AB.running'
 	else
-	NewLight=$(echo +$NewLight)
-	fi
+		Light=$(cat /sys/bus/iio/devices/iio\:device0/in_illuminance_raw)
 
-	brightnessctl -q s $NewLight
-	sleep $AnimationDelay
+		CurrentBrightness=$(cat /sys/class/backlight/intel_backlight/brightness)
+
+
+		Light=$(( $Light + $MinimumBrightness ))
+
+
+		TempLight=$(($Light * $SensorToDisplayScale))
+
+		if [[ $TempLight -gt $MaxScreenBrightness ]]
+		then
+			NewLight=$MaxScreenBrightness
+		else
+			NewLight=$TempLight
+		fi
+
+		DiffCount=$(( ($NewLight - $CurrentBrightness)/$LevelSteps ))
+
+		for i in $(eval echo {1..$LevelSteps} )
+		do
+
+			NewLight=$(( $DiffCount ))
+
+			if [[ $NewLight -lt 0 ]]
+			then
+			NewLight=$( echo "$NewLight" | awk -F "-" {'print$2'})
+			NewLight=$(echo $NewLight-)
+			else
+			NewLight=$(echo +$NewLight)
+			fi
+
+			brightnessctl -q s $NewLight
+			sleep $AnimationDelay
+
+		done
+
+		sleep $SensorDelay
+  fi
 
 done
-
-sleep $SensorDelay
-
-done
+rm '/tmp/AutoBright.kill'
