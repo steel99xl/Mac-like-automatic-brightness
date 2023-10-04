@@ -14,7 +14,7 @@ Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop senso
 
            Type     |  Sensor Rnge | STDScale
      11th Gen Intel | 0 - 3207633  | 1
-     12th Gen Intel | 0 - 3878     | 25
+     12th Gen Intel | 0 - 3984     | 25
 
 ## Controls
 ```/tmp/AB.stop  | Stops AutomaticBrightness.sh```
