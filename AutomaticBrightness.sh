@@ -3,7 +3,7 @@
 LevelSteps=60
 AnimationDelay=0.016
 MaxScreenBrightness=96000
-SensorDelay=1
+SensorDelay=2
 
 MinimumBrightness=001
 
@@ -66,4 +66,6 @@ do
   fi
 
 done
+rm '/tmp/AutoBright.running'
 rm '/tmp/AutoBright.kill'
+
