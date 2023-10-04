@@ -3,7 +3,7 @@
 LevelSteps=60
 AnimationDelay=0.016
 MaxScreenBrightness=96000
-SensorDelay=2
+SensorDelay=1
 
 MinimumBrightness=001
 
