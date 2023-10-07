@@ -14,7 +14,7 @@ Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop senso
 
            Type     |  Sensor Rnge | STDScale
      11th Gen Intel | 0 - 3207633  | 1
-     12th Gen Intel | 0 - 3984     | 25
+     12th Gen Intel | 0 - 3984     | 24
 
 ## Controls
 ```/tmp/AB.stop  | Stops AutomaticBrightness.sh```
@@ -27,17 +27,19 @@ when running you will see a ```AB.running``` file in ```/tmp```
 
 
 ## Configuring
+```Light Change``` The percent of light change needed to be seen by the sensor for it to change the screen brightness
+
+```SensorDelay``` Time in seconds the script will wait to check the sensor for a luminess change after the animation (LevelSteps * AnimationDelay)
+
+```SensorToDisplayScale``` The ratio from sensor to screen brighness, recommended minimum 24  for 12th gen framework laptops. Increasing the value will give a brighter screen for the amount of light in the room/ enviroment
+
 ```LevelSteps```  Sets amount of brightness steps, recomended to match refeshrate
 
 ```AnimationDelay```  Speed of the brightness animation(delay between each step), recomended screen refreshrate in seconds
 
 ```MaxScreenBrightness``` The highest value your screen supports, check ```/sys/class/backlight/intel_backlight/max_brightness``` on framework laptops
 
-```SensorDelay``` Time in seconds the script will wait to check the sensor for a luminess change after the animation (LevelSteps * AnimationDelay)
-
 ```MinimunBrightness``` The minimum screen brightness, recomended minumim 001 so the backlight dosn't turn off
-
-```SensorToDisplayScale``` The ratio from sensor to screen brighness, recommended minimum 24  for 12th gen framework laptops. Increasing the value will give a brighter screen for the amount of light in the room/ enviroment
 
 ~~ Other things to note
 
