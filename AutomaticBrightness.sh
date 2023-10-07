@@ -42,11 +42,7 @@ else
   $(echo $OffSet > /tmp/AB.offset)
 fi
 
-
-if [[ $OffSet -lt 0 ]]
-then
-  OffSet=0
-fi
+OffSet=$((OffSet < 0 ? 0 : OffSet))
 
 
 if [[ $op -lt 2 ]]
@@ -58,10 +54,7 @@ then
     OffSet=$((OffSet - num))
   fi
 
-  if [[ $OffSet -lt 0 ]]
-  then
-    OffSet=0
-  fi
+  OffSet=$((OffSet < 0 ? 0 : OffSet))
 
   $(echo $OffSet > /tmp/AB.offset)
   
