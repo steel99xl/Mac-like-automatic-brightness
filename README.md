@@ -17,13 +17,21 @@ Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop senso
      12th Gen Intel | 0 - 3984     | 24
 
 ## Controls
+```./AutomaticBrightness.sh | Defualt running mode of script```
+
+```./AutomaticBrightness.sh -i [NUMBER] | Increase the offset your brightness sensors raw reading ```
+
+```./AutomaticBrightness.sh -d [NUMBER] | Decrease the offset your brightness sensors raw reading ```
+
+```/tmp/AB.offset | Stores current offset for the sensor```
+
 ```/tmp/AB.stop  | Stops AutomaticBrightness.sh```
 
 ```/tmp/AB.start | Starts stopped AutomaticBrightness.sh``` 
 
 ```/tmp/AB.kill  | Kills AutomaticBrightness.sh```
 
-when running you will see a ```AB.running``` file in ```/tmp```
+when running you will see a ```AB.running``` file and ```AB.offset`` in ```/tmp```
 
 
 ## Configuring
