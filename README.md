@@ -3,6 +3,8 @@ A simple script to provide a "Mac" like automatic brightness adjustemnt/ animati
 
 made for the FrameWork laptop
 
+based on 2017 MacBook Pro
+
 read ```Configuration``` for detailed informatoion about what options you have to easily  customize/ adjust the bightness or animation speed
 
 ## Requires 
