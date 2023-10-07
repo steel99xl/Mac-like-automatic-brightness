@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #How much light change must be seen by the sensor befor it will act
-LightChange=5
+LightChange=10
 
 #How often it check the sensor
 SensorDelay=1
