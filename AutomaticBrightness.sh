@@ -41,9 +41,14 @@ do
 	else
 		Light=$(cat /sys/bus/iio/devices/iio\:device0/in_illuminance_raw)
 
-    MaxOld=$((OldLight + OldLight/LightChange))
-    MinOld=$((OldLight - OldLight/LightChange))
-
+    if [[ $Light -lt $LightChange ]] 
+    then
+      MaxOld=$((OldLight + LightChange))
+      MinOld=$((OldLight - LightChange))
+    else
+      MaxOld=$((OldLight + OldLight/LightChange))
+      MinOld=$((OldLight - OldLight/LightChange))
+    fi
 
     if [[ $Light -gt $MaxOld ]] || [[ $Light -lt $MinOld ]]
     then
