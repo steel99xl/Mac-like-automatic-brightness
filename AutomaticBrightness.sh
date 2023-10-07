@@ -1,15 +1,29 @@
 #!/bin/bash
 
-LevelSteps=60
-AnimationDelay=0.016
-MaxScreenBrightness=96000
+#How much light change must be seen by the sensor befor it will act
+LightChange=5
+
+#How often it check the sensor
 SensorDelay=1
+
+# Scale sesor to displas brightness range
+SensorToDisplayScale=24
+
+#This should match your refesh rate other wise it will either change the back light more times than needed or too few for a smooth animation
+LevelSteps=60
+# The is should match the LevelSteps but in the acual time each event should take to see
+AnimationDelay=0.016
+
+
+# Read the variable names
+MaxScreenBrightness=96000
 
 MinimumBrightness=001
 
-SensorToDisplayScale=24
 
 touch '/tmp/AB.running'
+
+OldLight=$(cat /sys/bus/iio/devices/iio\:device0/in_illuminance_raw)
 
 until [ -f /tmp/AB.kill ]
 do
@@ -27,45 +41,58 @@ do
 	else
 		Light=$(cat /sys/bus/iio/devices/iio\:device0/in_illuminance_raw)
 
-		CurrentBrightness=$(cat /sys/class/backlight/intel_backlight/brightness)
+    MaxOld=$((OldLight + OldLight/LightChange))
+    MinOld=$((OldLight - OldLight/LightChange))
 
 
-		Light=$(( $Light + $MinimumBrightness ))
+    if [[ $Light -gt $MaxOld ]] || [[ $Light -lt $MinOld ]]
+    then
 
 
-		TempLight=$(($Light * $SensorToDisplayScale))
+		  CurrentBrightness=$(cat /sys/class/backlight/intel_backlight/brightness)
 
-		if [[ $TempLight -gt $MaxScreenBrightness ]]
-		then
-			NewLight=$MaxScreenBrightness
-		else
-			NewLight=$TempLight
-		fi
 
-		DiffCount=$(( ($NewLight - $CurrentBrightness)/$LevelSteps ))
+		  Light=$(( $Light + $MinimumBrightness ))
 
-		for i in $(eval echo {1..$LevelSteps} )
-		do
 
-			NewLight=$(( $DiffCount ))
+		  TempLight=$(($Light * $SensorToDisplayScale))
 
-			if [[ $NewLight -lt 0 ]]
-			then
-			NewLight=$( echo "$NewLight" | awk -F "-" {'print$2'})
-			NewLight=$(echo $NewLight-)
-			else
-			NewLight=$(echo +$NewLight)
-			fi
+		  if [[ $TempLight -gt $MaxScreenBrightness ]]
+		  then
+			  NewLight=$MaxScreenBrightness
+		  else
+			  NewLight=$TempLight
+		  fi
 
-			brightnessctl -q s $NewLight
-			sleep $AnimationDelay
+		  DiffCount=$(( ($NewLight - $CurrentBrightness)/$LevelSteps ))
 
-		done
+		  for i in $(eval echo {1..$LevelSteps} )
+		  do
 
+			  NewLight=$(( $DiffCount ))
+
+			  if [[ $NewLight -lt 0 ]]
+			  then
+			  NewLight=$( echo "$NewLight" | awk -F "-" {'print$2'})
+			  NewLight=$(echo $NewLight-)
+			  else
+			  NewLight=$(echo +$NewLight)
+			  fi
+
+			  brightnessctl -q s $NewLight
+			  sleep $AnimationDelay
+
+		  done
+    fi
+   
 		sleep $SensorDelay
   fi
 
 done
-rm '/tmp/AutoBright.running'
-rm '/tmp/AutoBright.kill'
+
+
+rm '/tmp/AB.running'
+rm '/tmp/AB.kill'
+
+
 
