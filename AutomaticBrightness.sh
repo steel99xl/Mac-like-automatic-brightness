@@ -21,6 +21,55 @@ MaxScreenBrightness=96000
 MinimumBrightness=001
 
 
+
+# 2 : Default | 1 : Add Offset | 0 : Subtract Offset, Recomended not to change
+op=2
+
+while getopts i:d: flag
+do
+    case "${flag}" in
+        i) op=1
+           num=${OPTARG};;
+        d) op=0 
+           num=${OPTARG};;
+    esac
+done
+if [[ -f /tmp/AB.offset ]]
+then
+  OffSet=$(cat /tmp/AB.offset)
+else
+  OffSet=0
+  $(echo $OffSet > /tmp/AB.offset)
+fi
+
+
+if [[ $OffSet -lt 0 ]]
+then
+  OffSet=0
+fi
+
+
+if [[ $op -lt 2 ]]
+then
+  if [[ $op -eq 1 ]]
+  then
+    OffSet=$((OffSet + num))
+  else 
+    OffSet=$((OffSet - num))
+  fi
+
+  if [[ $OffSet -lt 0 ]]
+  then
+    OffSet=0
+  fi
+
+  $(echo $OffSet > /tmp/AB.offset)
+  
+  exit
+
+fi
+
+
 touch '/tmp/AB.running'
 
 OldLight=$(cat /sys/bus/iio/devices/iio\:device0/in_illuminance_raw)
@@ -39,7 +88,17 @@ do
 		rm '/tmp/AB.start'
 		touch '/tmp/AB.running'
 	else
+
+    if [[ -f /tmp/AB.offset ]]
+    then
+      OffSet=$(cat /tmp/AB.offset)
+    else
+      OffSet=0
+      $(echo $OffSet > /tmp/AB.offset)
+    fi
+
 		Light=$(cat /sys/bus/iio/devices/iio\:device0/in_illuminance_raw)
+    Light=$((Light + OffSet))
 
     if [[ $Light -lt $LightChange ]] 
     then
