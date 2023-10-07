@@ -83,6 +83,8 @@ do
 			  sleep $AnimationDelay
 
 		  done
+
+      OldLight=$Light
     fi
    
 		sleep $SensorDelay
