@@ -33,7 +33,7 @@ Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop senso
 
 ```/tmp/AB.kill  | Kills AutomaticBrightness.sh```
 
-when running you will see a ```AB.running``` file and ```AB.offset`` in ```/tmp```
+when running you will see a ```AB.running``` file and ```AB.offset``` in ```/tmp```
 
 
 ## Configuring
