@@ -62,6 +62,13 @@ then
 
 fi
 
+# This was moved down here to not affect performance of setting AB.offset
+priority=19 # Priority level , 0 = regular app , 19 = very much background app
+
+# Set the priority of the current script, Thank you  Theluga.
+renice "$cpu_limit" "$$"
+
+
 
 touch '/tmp/AB.running'
 
