@@ -64,6 +64,7 @@ if [[ -f /tmp/AB.offset ]]; then
 else
   OffSet=0
   echo $OffSet > /tmp/AB.offset
+  chmod 666 /tmp/AB.offset
 fi
 
 OffSet=$((OffSet < 0 ? 0 : OffSet))
@@ -77,6 +78,7 @@ if [[ $op -lt 2 ]]; then
 
   OffSet=$((OffSet < 0 ? 0 : OffSet))
   echo $OffSet > /tmp/AB.offset
+  chmod 666 /tmp/AB.offset
   exit
 fi
 
@@ -101,6 +103,7 @@ until [ -f /tmp/AB.kill ]; do
     else
       OffSet=0
       echo $OffSet > /tmp/AB.offset
+      chmod 666 /tmp/AB.offset
     fi
 
     Light=$(cat /sys/bus/iio/devices/iio:device5/in_illuminance_raw)
@@ -144,7 +147,7 @@ until [ -f /tmp/AB.kill ]; do
       OldLight=$Light
     fi
 
-    if [[ $Light -lt 3 ]]; then
+    if [[ $Light -lt 1 ]]; then
       smoothly_increase_brightness
     fi
 
