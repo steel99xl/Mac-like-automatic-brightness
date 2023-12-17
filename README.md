@@ -1,3 +1,14 @@
+# this fork has this changes:
+The darker mode, when the illuminance is less than 1 i.e. 0, it will go to the target brightness that is 1. Can be easily changed.
+
+If the file AB.offset have 0 as value. Darker mode is activated and setting brightness will reset to target value 1 when illuminance is less than 1.
+if the file has value of 1, it will be the normal mode and the screen brightness can be adjusted until the illuminance sensor changes.
+
+easier to change variables and places and chmod 666 /tmp/AB.offset for the user to change modes when script is running as root (systemd service)
+darker mode as default with normal mode done by typing "echo 1 > /tmp/AB.offset"
+
+they are in autobrightness.sh
+
 # Mac-like-automatic-brightness
 A simple script to provide a "Mac" like automatic brightness adjustemnt/ animation
 
