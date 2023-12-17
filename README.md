@@ -1,4 +1,4 @@
-# this fork has this changes:
+# This fork has this changes:
 The darker mode, when the illuminance is less than 1 i.e. 0, it will go to the target brightness that is 1. Can be easily changed.
 
 If the file AB.offset have 0 as value. Darker mode is activated and setting brightness will reset to target value 1 when illuminance is less than 1.
