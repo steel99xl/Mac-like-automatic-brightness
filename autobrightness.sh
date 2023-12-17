@@ -1,13 +1,9 @@
 #!/bin/bash
 
+#variables to run
+
 #decrease cpu usage
-cpu_limit=20 # CPU limit, adjust as needed
-
-# Set the priority of the current script
-renice "$cpu_limit" "$$"
-
-
-
+Priority=19 # CPU limit, adjust as needed
 
 # How much light change must be seen by the sensor before it will act
 LightChange=10
@@ -20,6 +16,7 @@ SensorToDisplayScale=24
 
 # This should match your refresh rate otherwise it will either change the backlight more times than needed or too few for a smooth animation
 LevelSteps=60
+
 # The is should match the LevelSteps but in the actual time each event should take to see
 AnimationDelay=0.016
 
@@ -30,10 +27,20 @@ MinimumBrightness=1
 # 2 : Default | 1 : Add Offset | 0 : Subtract Offset, Recommended not to change
 op=2
 
-# Function to smoothly increase brightness
-smoothly_increase_brightness() {
-  current_brightness=$(cat /sys/class/backlight/intel_backlight/brightness)
-  target_brightness=1
+#place where you get the brightness of the monitor being controled and the sensor of brightness
+MonitorBrightness=/sys/class/backlight/intel_backlight/brightness
+
+AnbientSensorIlluminance=/sys/bus/iio/devices/iio:device5/in_illuminance_raw
+
+#Normal Mode, if the file offset is set to 1. Darker Mode if set to 0
+# the offset file in /tmp/AB.offset will start with 0 so darker mode is default
+# setting to 1 will enable normal mode. (darker mode ignores brightness set if iluminance is 0 and will set display to actual_brightness=1
+
+# Function to smoothly decrease brightness
+#darker mode
+smoothly_decrease_brightness() {
+  current_brightness=$(cat $MonitorBrightness)
+  target_brightness=1   # can be set to 0 or more when illuminance is 0.
 
   steps=60  # You can adjust the number of steps for smoother transition
   animation_delay=0.016
@@ -82,9 +89,13 @@ if [[ $op -lt 2 ]]; then
   exit
 fi
 
+
+# Set the priority of the current script and says it is running
+renice "$Priority" "$$"
 touch '/tmp/AB.running'
 
-OldLight=$(cat /sys/bus/iio/devices/iio:device5/in_illuminance_raw)
+
+OldLight=$(cat $AnbientSensorIlluminance)
 
 until [ -f /tmp/AB.kill ]; do
   if [[ -f /tmp/AB.stop ]]; then
@@ -106,7 +117,7 @@ until [ -f /tmp/AB.kill ]; do
       chmod 666 /tmp/AB.offset
     fi
 
-    Light=$(cat /sys/bus/iio/devices/iio:device5/in_illuminance_raw)
+    Light=$(cat $AnbientSensorIlluminance)
     Light=$((Light + OffSet))
 
     if [[ $Light -lt $LightChange ]]; then
@@ -118,7 +129,7 @@ until [ -f /tmp/AB.kill ]; do
     fi
 
     if [[ $Light -gt $MaxOld ]] || [[ $Light -lt $MinOld ]]; then
-      CurrentBrightness=$(cat /sys/class/backlight/intel_backlight/brightness)
+      CurrentBrightness=$(cat $MonitorBrightness)
       Light=$(( $Light + $MinimumBrightness ))
       TempLight=$(($Light * $SensorToDisplayScale))
 
@@ -147,8 +158,9 @@ until [ -f /tmp/AB.kill ]; do
       OldLight=$Light
     fi
 
+#darker mode activated
     if [[ $Light -lt 1 ]]; then
-      smoothly_increase_brightness
+      smoothly_decrease_brightness
     fi
 
     sleep $SensorDelay
