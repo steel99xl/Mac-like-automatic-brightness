@@ -1,25 +1,8 @@
 [Unit]
-
-Description=roda autobrightness com 1% de processamento
-After=multi-user.target
-After=graphical.target
-After=basic.target
-After=sysinit.target
-After=system.slice
-After=systemd-journald.socket
-After=initrd-switch-root.service
-After=iio-sensor-proxy.service
-
-
+Description=Mac like automatic brightness service
 
 [Service]
-ExecStartPre=/bin/bash -c "sleep 5"
-ExecStart=/bin/bash -c "exec /etc/luztecla/autobrightness.sh"
-
-
-Restart=always
+ExecStart=/path/to/AutomaticBrightness.sh
 
 [Install]
-
-WantedBy=graphical.target
-WantedBy=multi-user.target
+WantedBy=default.target
