@@ -6,7 +6,7 @@
 Priority=19 # CPU limit, adjust as needed
 
 # How much light change must be seen by the sensor before it will act
-LightChange=5
+LightChange=10
 
 # How often it checks the sensor
 SensorDelay=1
