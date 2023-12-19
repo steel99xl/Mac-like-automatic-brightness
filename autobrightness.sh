@@ -6,13 +6,13 @@
 Priority=19 # CPU limit, adjust as needed
 
 # How much light change must be seen by the sensor before it will act
-LightChange=10
+LightChange=5
 
 # How often it checks the sensor
 SensorDelay=1
 
 # Scale sensor to display brightness range
-SensorToDisplayScale=24
+SensorToDisplayScale=20
 
 # This should match your refresh rate otherwise it will either change the backlight more times than needed or too few for a smooth animation
 LevelSteps=60
@@ -24,38 +24,20 @@ AnimationDelay=0.016
 MaxScreenBrightness=937
 MinimumBrightness=1
 
+#minimum illuminance to get minimum brightness
+
+MinimimumIlluminance=0
+
 # 2 : Default | 1 : Add Offset | 0 : Subtract Offset, Recommended not to change
 op=2
 
 #place where you get the brightness of the monitor being controled and the sensor of brightness
 MonitorBrightness=/sys/class/backlight/intel_backlight/brightness
 
-AnbientSensorIlluminance=/sys/bus/iio/devices/iio:device5/in_illuminance_raw
+#my sensor keep changing places, this way it will always be found with * if you have lots of sensors
 
-#Normal Mode, if the file offset is set to 1. Darker Mode if set to 0
-# the offset file in /tmp/AB.offset will start with 0 so darker mode is default
-# setting to 1 will enable normal mode. (darker mode ignores brightness set if iluminance is 0 and will set display to actual_brightness=1
+AnbientSensorIlluminance=/sys/bus/iio/devices/iio:*/in_illuminance_raw 
 
-# Function to smoothly decrease brightness
-#darker mode
-smoothly_decrease_brightness() {
-  current_brightness=$(cat $MonitorBrightness)
-  target_brightness=1   # can be set to 0 or more when illuminance is 0.
-
-  steps=60  # You can adjust the number of steps for smoother transition
-  animation_delay=0.016
-
-  diff_count=$((($target_brightness - $current_brightness) / $steps))
-
-  for ((i = 1; i <= $steps; i++)); do
-    new_brightness=$((current_brightness + i * diff_count))
-    brightnessctl -q s $new_brightness
-    sleep $animation_delay
-  done
-
-  # Set the final brightness value
-  brightnessctl -q s $target_brightness
-}
 
 while getopts i:d: flag; do
   case "${flag}" in
@@ -118,7 +100,9 @@ until [ -f /tmp/AB.kill ]; do
     fi
 
     Light=$(cat $AnbientSensorIlluminance)
+    RealLight=$(cat $AnbientSensorIlluminance)
     Light=$((Light + OffSet))
+    RealLight=$((RealLight + OffSet))
 
     if [[ $Light -lt $LightChange ]]; then
       MaxOld=$((OldLight + LightChange))
@@ -135,12 +119,16 @@ until [ -f /tmp/AB.kill ]; do
 
       if [[ $TempLight -gt $MaxScreenBrightness ]]; then
         NewLight=$MaxScreenBrightness
+        LimitMaxIlluminanceReached=1
+      elif [[ $RealLight -le $MinimimumIlluminance ]]; then
+        NewLight=$MinimumBrightness
+        LimitMinIlluminanceReached=1
       else
         NewLight=$TempLight
       fi
 
       DiffCount=$(( ($NewLight - $CurrentBrightness)/$LevelSteps ))
-
+      
       for i in $(eval echo {1..$LevelSteps}); do
         NewLight=$(( $DiffCount ))
 
@@ -150,17 +138,26 @@ until [ -f /tmp/AB.kill ]; do
         else
           NewLight=$(echo +$NewLight)
         fi
-
+        
+        if [[ $i -eq $LevelSteps ]]; then
+          brightnessctl -q s $NewLight
+          
+          if [[ $LimitMaxIlluminanceReached -eq 1 ]]; then
+            NewLight=$MaxScreenBrightness
+            LimitMaxIlluminanceReached=0
+          fi
+          
+          if [[ $LimitMinIlluminanceReached -eq 1 ]]; then
+            NewLight=$MinimumBrightness
+            LimitMinIlluminanceReached=0
+          fi
+        fi
+          
         brightnessctl -q s $NewLight
         sleep $AnimationDelay
       done
 
       OldLight=$Light
-    fi
-
-#darker mode activated
-    if [[ $Light -lt 1 ]]; then
-      smoothly_decrease_brightness
     fi
 
     sleep $SensorDelay
