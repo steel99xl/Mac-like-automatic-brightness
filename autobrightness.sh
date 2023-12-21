@@ -1,4 +1,5 @@
 #!/bin/bash
+# Slight Alteration of AutomaticBrighness.sh (could be a dell specific fork)
 
 #variables to run
 
