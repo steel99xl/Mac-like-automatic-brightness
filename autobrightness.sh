@@ -37,7 +37,7 @@ MonitorBrightness=/sys/class/backlight/intel_backlight/brightness
 
 #my sensor keep changing places, this way it will always be found with * if you have lots of sensors
 
-AnbientSensorIlluminance=`echo realpath /sys/bus/iio/devices/iio:*/in_illuminance_raw`
+AnbientSensorIlluminance=`echo "$(set -- $(realpath /sys/bus/iio/devices/iio:*/in_illuminance_raw); echo "$1")"`
 
 
 while getopts i:d: flag; do
