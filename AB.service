@@ -1,0 +1,12 @@
+[Unit]
+Description=Mac like automatic brightness  as service
+
+[Service]
+Type=simple
+Restart=no
+RestartSec=1
+
+ExecStart=/usr/local/bin/AutomaticBrightness.sh
+
+[Install]
+WantedBy=default.target
