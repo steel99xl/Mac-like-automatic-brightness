@@ -1,6 +1,7 @@
 # Mac-like-automatic-brightness
 A simple script to provide a "Mac" like automatic brightness adjustemnt/ animation. 
 ## Now as a system service 
+Run ```setup.sh``` to make it a service
 
 made for the FrameWork laptop
 
