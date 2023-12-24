@@ -31,8 +31,6 @@ Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop senso
 ```/dev/shm/AB.offset | Stores current offset for the sensor```
 
 
-when running you will see a ```AB.running``` file and ```AB.offset``` in ```/tmp```
-
 
 ## Configuring
 ```Light Change``` The percent of light change needed to be seen by the sensor for it to change the screen brightness
