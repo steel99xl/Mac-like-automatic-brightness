@@ -34,13 +34,16 @@ do
            num=${OPTARG};;
     esac
 done
-if [[ -f /tmp/AB.offset ]]
+
+if [[ -f /dev/shm/AB.offset ]]
 then
-  OffSet=$(cat /tmp/AB.offset)
+  OffSet=$(cat /dev/shm/AB.offset)
 else
   OffSet=0
-  $(echo $OffSet > /tmp/AB.offset)
+  $(echo $OffSet > /dev/shm/AB.offset)
+  $(chmod 666 /dev/shm/AB.offset)
 fi
+
 
 OffSet=$((OffSet < 0 ? 0 : OffSet))
 
@@ -56,7 +59,7 @@ then
 
   OffSet=$((OffSet < 0 ? 0 : OffSet))
 
-  $(echo $OffSet > /tmp/AB.offset)
+  $(echo $OffSet > /dev/shm/AB.offset)
   
   exit
 
@@ -70,31 +73,18 @@ renice "$priority" "$$"
 
 
 
-touch '/tmp/AB.running'
 
 OldLight=$(cat /sys/bus/iio/devices/iio\:device0/in_illuminance_raw)
 
-until [ -f /tmp/AB.kill ]
+while true
 do
-	if [[ -f /tmp/AB.stop ]]
-	then
-		rm '/tmp/AB.stop'
-		rm '/tmp/AB.running'
-
-		until [[ -f /tmp/AB.start ]]
-		do
-			sleep 10
-		done
-		rm '/tmp/AB.start'
-		touch '/tmp/AB.running'
-	else
-
-    if [[ -f /tmp/AB.offset ]]
+    if [[ -f /dev/shm/AB.offset ]]
     then
-      OffSet=$(cat /tmp/AB.offset)
+      OffSet=$(cat /dev/shm/AB.offset)
     else
       OffSet=0
-      $(echo $OffSet > /tmp/AB.offset)
+      $(echo $OffSet > /dev/shm/AB.offset)
+      $(chmod 666 /dev/shm/AB.offset)
     fi
 
 		Light=$(cat /sys/bus/iio/devices/iio\:device0/in_illuminance_raw)
@@ -152,13 +142,7 @@ do
     fi
    
 		sleep $SensorDelay
-  fi
-
 done
-
-
-rm '/tmp/AB.running'
-rm '/tmp/AB.kill'
 
 
 
