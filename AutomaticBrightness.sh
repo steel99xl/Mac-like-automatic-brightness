@@ -16,8 +16,6 @@ AnimationDelay=0.016
 
 
 # Read the variable names
-MaxScreenBrightness=96000
-
 MinimumBrightness=001
 
 
@@ -71,10 +69,15 @@ priority=19 # Priority level , 0 = regular app , 19 = very much background app
 # Set the priority of the current script, Thank you  Theluga.
 renice "$priority" "$$"
 
+MaxScreenBrightness=$(find -L /sys/class/backlight -maxdepth 2 -name "max_brightness" 2>/dev/null | grep "max_brightness" | xargs cat)
+
+BLightPath=$(find -L /sys/class/backlight -maxdepth 2 -name "brightness" 2>/dev/null | grep "brightness")
+
+LSensorPath=$(find -L /sys/bus/iio/devices -maxdepth 2  -name "in_illuminance_raw" 2>/dev/null | grep "in_illuminance_raw")
 
 
 
-OldLight=$(cat /sys/bus/iio/devices/iio\:device0/in_illuminance_raw)
+OldLight=$(cat $LSensorPath)
 
 while true
 do
@@ -87,7 +90,7 @@ do
       $(chmod 666 /dev/shm/AB.offset)
     fi
 
-		Light=$(cat /sys/bus/iio/devices/iio\:device0/in_illuminance_raw)
+		Light=$(cat $LSensorPath)
     Light=$((Light + OffSet))
 
     if [[ $Light -lt $LightChange ]] 
@@ -103,7 +106,7 @@ do
     then
 
 
-		  CurrentBrightness=$(cat /sys/class/backlight/intel_backlight/brightness)
+		  CurrentBrightness=$(cat $BLightPath)
 
 
 		  Light=$(( $Light + $MinimumBrightness ))
