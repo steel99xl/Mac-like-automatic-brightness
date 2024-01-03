@@ -16,8 +16,6 @@ AnimationDelay=0.016
 
 
 # Read the variable names
-MaxScreenBrightness=96000
-
 MinimumBrightness=001
 
 
@@ -34,13 +32,16 @@ do
            num=${OPTARG};;
     esac
 done
-if [[ -f /tmp/AB.offset ]]
+
+if [[ -f /dev/shm/AB.offset ]]
 then
-  OffSet=$(cat /tmp/AB.offset)
+  OffSet=$(cat /dev/shm/AB.offset)
 else
   OffSet=0
-  $(echo $OffSet > /tmp/AB.offset)
+  $(echo $OffSet > /dev/shm/AB.offset)
+  $(chmod 666 /dev/shm/AB.offset)
 fi
+
 
 OffSet=$((OffSet < 0 ? 0 : OffSet))
 
@@ -56,7 +57,7 @@ then
 
   OffSet=$((OffSet < 0 ? 0 : OffSet))
 
-  $(echo $OffSet > /tmp/AB.offset)
+  $(echo $OffSet > /dev/shm/AB.offset)
   
   exit
 
@@ -68,36 +69,28 @@ priority=19 # Priority level , 0 = regular app , 19 = very much background app
 # Set the priority of the current script, Thank you  Theluga.
 renice "$priority" "$$"
 
+MaxScreenBrightness=$(find -L /sys/class/backlight -maxdepth 2 -name "max_brightness" 2>/dev/null | grep "max_brightness" | xargs cat)
+
+BLightPath=$(find -L /sys/class/backlight -maxdepth 2 -name "brightness" 2>/dev/null | grep "brightness")
+
+LSensorPath=$(find -L /sys/bus/iio/devices -maxdepth 2  -name "in_illuminance_raw" 2>/dev/null | grep "in_illuminance_raw")
 
 
-touch '/tmp/AB.running'
 
-OldLight=$(cat /sys/bus/iio/devices/iio\:device0/in_illuminance_raw)
+OldLight=$(cat $LSensorPath)
 
-until [ -f /tmp/AB.kill ]
+while true
 do
-	if [[ -f /tmp/AB.stop ]]
-	then
-		rm '/tmp/AB.stop'
-		rm '/tmp/AB.running'
-
-		until [[ -f /tmp/AB.start ]]
-		do
-			sleep 10
-		done
-		rm '/tmp/AB.start'
-		touch '/tmp/AB.running'
-	else
-
-    if [[ -f /tmp/AB.offset ]]
+    if [[ -f /dev/shm/AB.offset ]]
     then
-      OffSet=$(cat /tmp/AB.offset)
+      OffSet=$(cat /dev/shm/AB.offset)
     else
       OffSet=0
-      $(echo $OffSet > /tmp/AB.offset)
+      $(echo $OffSet > /dev/shm/AB.offset)
+      $(chmod 666 /dev/shm/AB.offset)
     fi
 
-		Light=$(cat /sys/bus/iio/devices/iio\:device0/in_illuminance_raw)
+		Light=$(cat $LSensorPath)
     Light=$((Light + OffSet))
 
     if [[ $Light -lt $LightChange ]] 
@@ -113,7 +106,7 @@ do
     then
 
 
-		  CurrentBrightness=$(cat /sys/class/backlight/intel_backlight/brightness)
+		  CurrentBrightness=$(cat $BLightPath)
 
 
 		  Light=$(( $Light + $MinimumBrightness ))
@@ -152,13 +145,7 @@ do
     fi
    
 		sleep $SensorDelay
-  fi
-
 done
-
-
-rm '/tmp/AB.running'
-rm '/tmp/AB.kill'
 
 
 

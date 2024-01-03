@@ -1,5 +1,7 @@
 # Mac-like-automatic-brightness
-A simple script to provide a "Mac" like automatic brightness adjustemnt/ animation
+A simple script to provide a "Mac" like automatic brightness adjustemnt/ animation. 
+## Now as a system service 
+Run ```setup.sh``` to make it a service
 
 made for the FrameWork laptop
 
@@ -26,15 +28,8 @@ Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop senso
 
 ```./AutomaticBrightness.sh -d [NUMBER] | Decrease the offset your brightness sensors raw reading ```
 
-```/tmp/AB.offset | Stores current offset for the sensor```
+```/dev/shm/AB.offset | Stores current offset for the sensor```
 
-```/tmp/AB.stop  | Stops AutomaticBrightness.sh```
-
-```/tmp/AB.start | Starts stopped AutomaticBrightness.sh``` 
-
-```/tmp/AB.kill  | Kills AutomaticBrightness.sh```
-
-when running you will see a ```AB.running``` file and ```AB.offset``` in ```/tmp```
 
 
 ## Configuring
