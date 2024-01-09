@@ -121,7 +121,7 @@ do
 			  NewLight=$TempLight
 		  fi
 
-		  DiffCount=$(( ($NewLight - $CurrentBrightness)/$LevelSteps ))
+		  DiffCount=$(( ( $NewLight - $CurrentBrightness ) / $LevelSteps ))
 
 		  for i in $(eval echo {1..$LevelSteps} )
 		  do
