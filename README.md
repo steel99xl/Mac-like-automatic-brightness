@@ -1,7 +1,7 @@
 # Mac-like-automatic-brightness
 A simple script to provide a "Mac" like automatic brightness adjustemnt/ animation. 
 ## Now as a system service 
-Run ```setup.sh``` to make it a service
+Run ```setup.sh``` to make it a service and automaticaly set your ```SensorToDisplacScale```
 
 made for the FrameWork laptop
 
@@ -30,6 +30,8 @@ Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop senso
 
 ```/dev/shm/AB.offset | Stores current offset for the sensor```
 
+* Changing the offset of your backlight while the service is running is one way you increase or decease your screen bightness but keep the automatic adjustments when the lighting changes 
+
 
 
 ## Configuring
@@ -41,14 +43,16 @@ Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop senso
 
 ```LevelSteps```  Sets amount of brightness steps, recomended to match refeshrate
 
-```AnimationDelay```  Speed of the brightness animation(delay between each step), recomended screen refreshrate in seconds
-
-```MaxScreenBrightness``` The highest value your screen supports, check ```/sys/class/backlight/intel_backlight/max_brightness``` on framework laptops
+```AnimationDelay```  Speed of the brightness animation(delay between each step), recomended screen refreshrate in seconds (0.16 of 60Hz)
 
 ```MinimunBrightness``` The minimum screen brightness, recomended minumim 001 so the backlight dosn't turn off
 
-~~ Other things to note
+### Run``` setup.sh -u``` to update the installed script and service
+
+~~ Other things to note but shouldn't have to adjust
 
 ```Light```  The file where your lightsensor has its current value
 
 ```CurrentBirghtness```  The file where your screen stores its current brightness 
+
+```MaxScreenBrightness``` The highest value your screen supports, check ```/sys/class/backlight/intel_backlight/max_brightness``` on framework laptops

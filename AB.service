@@ -1,5 +1,5 @@
 [Unit]
-Description=Mac like automatic brightness  as service
+Description=Mac-like-automatic-brightness  as service
 
 [Service]
 Type=simple
