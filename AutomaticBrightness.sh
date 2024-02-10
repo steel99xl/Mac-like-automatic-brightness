@@ -7,7 +7,8 @@ LightChange=10
 SensorDelay=1
 
 # Scale sesor to displas brightness range
-SensorToDisplayScale=24
+# NOW WITH FLOAT SUPPORT
+SensorToDisplayScale=24.09
 
 #This should match your refesh rate other wise it will either change the back light more times than needed or too few for a smooth animation
 LevelSteps=60
@@ -69,6 +70,8 @@ priority=19 # Priority level , 0 = regular app , 19 = very much background app
 # Set the priority of the current script, Thank you  Theluga.
 renice "$priority" "$$"
 
+sleep 5
+
 MaxScreenBrightness=$(find -L /sys/class/backlight -maxdepth 2 -name "max_brightness" 2>/dev/null | grep "max_brightness" | xargs cat)
 
 BLightPath=$(find -L /sys/class/backlight -maxdepth 2 -name "brightness" 2>/dev/null | grep "brightness")
@@ -111,8 +114,9 @@ do
 
 		  Light=$(( $Light + $MinimumBrightness ))
 
-
-		  TempLight=$(($Light * $SensorToDisplayScale))
+      TempLight=$(echo "scale=2; $Light * $SensorToDisplayScale" | bc)
+      # REmoves float for latter checks
+      TempLight=$(LANG=C printf "%.0f" $TempLight)
 
 		  if [[ $TempLight -gt $MaxScreenBrightness ]]
 		  then

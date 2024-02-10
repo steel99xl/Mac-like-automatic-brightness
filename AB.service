@@ -3,8 +3,8 @@ Description=Mac like automatic brightness  as service
 
 [Service]
 Type=simple
-Restart=no
-RestartSec=1
+Restart=on-failure
+RestartSec=5s
 
 ExecStart=/usr/local/bin/AutomaticBrightness.sh
 
