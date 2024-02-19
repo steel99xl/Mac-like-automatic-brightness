@@ -146,17 +146,29 @@ do
 			  NewLight=$(( $DiffCount ))
 
 
+
+              CurrentBrightness=$(cat $BLightPath)
+              FakeLight=$(( $NewLight + $CurrentBrightness))
+
+              if [[ $FakeLight -gt $MaxScreenBrightness ]]
+              then
+                  NewLight=$MaxScreenBrightness
+                  echo "ERROR"
+              else
+                  echo $FakeLight > $BLightPath
+              fi
+
         # Format values apropriatly for brightnessctl
-			  if [[ $NewLight -lt 0 ]]
-			  then
-			  NewLight=$( echo "$NewLight" | awk -F "-" {'print$2'})
-			  NewLight=$(echo $NewLight-)
-			  else
-			  NewLight=$(echo +$NewLight)
-			  fi
-        
+			  #if [[ $NewLight -lt 0 ]]
+			  #then
+			  #NewLight=$( echo "$NewLight" | awk -F "-" {'print$2'})
+			  #NewLight=$(echo $NewLight-)
+			  #else
+			  #NewLight=$(echo +$NewLight)
+			  #fi
+
         # Adjust brightness relativly
-			  brightnessctl -q s $NewLight
+			  #brightnessctl -q s $NewLight
         # Sleep for the screen Hz time so he effect is visible
 			  sleep $AnimationDelay
 

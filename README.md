@@ -10,7 +10,10 @@ based on 2017 MacBook Pro
 read ```Configuration``` for detailed informatoion about what options you have to easily  customize/ adjust the bightness or animation speed
 
 ## Requires 
-brightnessctl
+For running in as your user you need to be part of the ```vidoe``` group 
+```sudo usermod -a -G vido $USER``` if your not apart of the group
+
+If your installing as a system service your user dose not need to be apart of the group
 
 ## Non 12th Gen Intel Framework Owners
 Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop sensors, please see chart bellow
