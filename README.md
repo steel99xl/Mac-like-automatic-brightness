@@ -10,7 +10,7 @@ based on 2017 MacBook Pro
 read ```Configuration``` for detailed informatoion about what options you have to easily  customize/ adjust the bightness or animation speed
 
 ## Requires 
-For running in as your user you need to be part of the ```video``` group 
+For running as your user you need to be part of the ```video``` group 
 ```sudo usermod -a -G video $USER``` if your not apart of the group
 
 If your installing as a system service your user dose not need to be apart of the group
