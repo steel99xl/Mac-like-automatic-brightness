@@ -122,9 +122,7 @@ do
       
       # Gernate a TempLight value for the screen to be set to
       # Float math thanks Matthias_Wachter 
-      TempLight=$(echo "scale=2; $Light * $SensorToDisplayScale" | bc)
-      # REmoves float for latter checks
-      TempLight=$(LANG=C printf "%.0f" $TempLight)
+      TempLight=$(LANG=C printf "%.0f" $(echo "scale=2; $Light * $SensorToDisplayScale" | bc))
 
 
       # Check we dont ask the screen to go brighter than it can
@@ -136,7 +134,7 @@ do
 		  fi
 
       # How diffrent should each stop be
-		  DiffCount=$(( ( $NewLight - $CurrentBrightness ) / $LevelSteps ))
+      DiffCount=$(LANG=C printf "%.0f" $(echo "scale=2; ( $NewLight - $CurrentBrightness ) / $LevelSteps" | bc ))
 
       # Step once per Screen Hz to make animation
 		  for i in $(eval echo {1..$LevelSteps} )

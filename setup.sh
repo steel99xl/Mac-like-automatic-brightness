@@ -33,7 +33,7 @@ Scale=$(echo "scale=2; $MaxScreenBrightness / $Smax" | bc)
 
 Final="SensorToDisplayScale=$Scale"
 
-awk -v new_phrase="$Final" '/SensorToDisplayScale/{ print new_phrase; next } 1' AutomaticBrightness.sh  > temp && mv temp AutomaticBrightness.sh
+awk -v new_phrase="$Final" '/SensorToDisplayScale=/{ print new_phrase; next } 1' AutomaticBrightness.sh  > temp && mv temp AutomaticBrightness.sh
 
 
 echo "Cloning AutomaticBrighness.sh..."
