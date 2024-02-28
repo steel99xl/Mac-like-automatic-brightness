@@ -10,6 +10,8 @@ based on 2017 MacBook Pro
 read ```Configuration``` for detailed informatoion about what options you have to easily  customize/ adjust the bightness or animation speed
 
 ## Requires 
+```bc```
+
 For running in as your user you need to be part of the ```vidoe``` group 
 ```sudo usermod -a -G vido $USER``` if your not apart of the group
 
