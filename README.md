@@ -11,9 +11,8 @@ read ```Configuration``` for detailed informatoion about what options you have t
 
 ## Requires 
 ```bc```
-
-For running in as your user you need to be part of the ```vidoe``` group 
-```sudo usermod -a -G vido $USER``` if your not apart of the group
+For running as your user you need to be part of the ```video``` group 
+```sudo usermod -a -G video $USER``` if your not apart of the group
 
 If your installing as a system service your user dose not need to be apart of the group
 
