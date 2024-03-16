@@ -35,6 +35,14 @@ Final="SensorToDisplayScale=$Scale"
 
 awk -v new_phrase="$Final" '/SensorToDisplayScale=/{ print new_phrase; next } 1' AutomaticBrightness.sh  > temp && mv temp AutomaticBrightness.sh
 
+TempSteps=($MaxScreenBrightness / 60)
+if [[ TempSteps -lt 17 ]]
+then
+    Steps=$($MaxScreenBrightness / 16)
+    NewStep="LevelSteps=$Steps"
+
+    awk -v new_phrase="$NewStep" '/LevelSteps=/{ print new_phrase; next } 1' AutomaticBrightness.sh  > temp && mv temp AutomaticBrightness.sh
+fi
 
 echo "Cloning AutomaticBrighness.sh..."
 sudo cp AutomaticBrightness.sh /usr/local/bin/AutomaticBrightness.sh
