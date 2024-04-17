@@ -8,16 +8,16 @@ SensorDelay=1
 
 # Scale sesor to displas brightness range
 # NOW WITH FLOAT SUPPORT
-SensorToDisplayScale=24.09
+SensorToDisplayScale=1
 
 #This should match your refesh rate other wise it will either change the back light more times than needed or too few for a smooth animation
-LevelSteps=60
+LevelSteps=31
 # The is should match the LevelSteps but in the acual time each event should take to see
 AnimationDelay=0.016
 
 
 # Read the variable names
-MinimumBrightness=001
+MinimumBrightness=050
 
 
 
@@ -84,11 +84,18 @@ MaxScreenBrightness=$(find -L /sys/class/backlight -maxdepth 2 -name "max_bright
 BLightPath=$(find -L /sys/class/backlight -maxdepth 2 -name "brightness" 2>/dev/null | grep "brightness")
 
 # Set path to current luminance sensor
-LSensorPath=$(find -L /sys/bus/iio/devices -maxdepth 2  -name "in_illuminance_raw" 2>/dev/null | grep "in_illuminance_raw")
 
 
 #Set the current light value so we have something to compare to
-OldLight=$(cat $LSensorPath)
+if [[ -f /dev/shm/AB.offset ]]
+then
+    OffSet=$(cat /dev/shm/AB.offset)
+else
+    OffSet=0
+    $(echo $OffSet > /dev/shm/AB.offset)
+    $(chmod 666 /dev/shm/AB.offset)
+fi
+OldLight=$(($OffSet))
 
 while true
 do
@@ -101,9 +108,8 @@ do
       $(chmod 666 /dev/shm/AB.offset)
     fi
 
-		Light=$(cat $LSensorPath)
     ## apply offset to current light value
-    Light=$((Light + OffSet))
+    Light=$((OffSet))
 
     # Set allowed range for light 
     
