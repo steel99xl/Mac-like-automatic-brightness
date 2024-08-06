@@ -7,7 +7,14 @@ made for the FrameWork laptop
 
 based on 2017 MacBook Pro
 
+
 read ```Configuration``` for detailed informatoion about what options you have to easily  customize/ adjust the bightness or animation speed
+
+## Updating
+Run ```git pull``` to download the latest version
+
+Then run ```./setup -u``` to update the the service and script running on your system with newly downloaded / modifyed versions
+
 
 ## Requires 
 ```bc```
