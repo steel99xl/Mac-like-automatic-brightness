@@ -118,7 +118,7 @@ do
 		  CurrentBrightness=$(cat $BLightPath)
 
       # Add MinimumBrighness here to not effect comparison but the outcome
-      Light=$(LANG=C printf "%.0f" $(echo "scale=2; $Light +  (  ($MaxScreenBrightness  * ( $MinimumBrightness / 100 )) / $SensorToDisplayScale )  " | bc ))
+      Light=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; $Light +  (  ($MaxScreenBrightness  * ( $MinimumBrightness / 100 )) / $SensorToDisplayScale )  " | bc ))
       
       # Gernate a TempLight value for the screen to be set to
       # Float math thanks Matthias_Wachter 
