@@ -46,6 +46,7 @@ fi
 
 echo "Cloning AutomaticBrighness.sh..."
 sudo cp AutomaticBrightness.sh /usr/local/bin/AutomaticBrightness.sh
+sudo chmod u+x /usr/local/bin/AutomaticBrightness.sh
 
 echo "Cloning AB.service for systemD..."
 sudo cp AB.service /etc/systemd/system/AB.service
