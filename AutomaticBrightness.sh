@@ -10,10 +10,10 @@ SensorDelay=1
 # NOW WITH FLOAT SUPPORT
 SensorToDisplayScale=24.09
 
-#This should match your refesh rate other wise it will either change the back light more times than needed or too few for a smooth animation
-LevelSteps=60
-# The is should match the LevelSteps but in the acual time each event should take to see
-AnimationDelay=0.016
+# 12 steps is the most similar on a Macbook 2017 running Arch compared to MacOS
+LevelSteps=12
+# Playes the 12 stesp effectivly at 30 FPS 32ms
+AnimationDelay=0.032
 
 
 # Read the variable names
