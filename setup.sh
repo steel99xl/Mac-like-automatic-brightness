@@ -1,11 +1,11 @@
 #!/bin/bash
 #
 case $1 in
-        -u) echo "Updading Mac-like-automatic-brightness..."
+        -u) echo "Updating Mac-like-automatic-brightness..."
           echo "Stopping AB service..."
           sudo systemctl kill AB
           echo "Updating AutomaticBrightness.sh..."
-          echo "Cloning AutomaticBrighness.sh..."
+          echo "Cloning AutomaticBrightness.sh..."
           sudo cp AutomaticBrightness.sh /usr/local/bin/AutomaticBrightness.sh
           echo "Updating AB.service for systemD..."
           echo "Cloning AB.service for systemD..."
@@ -44,7 +44,7 @@ then
     awk -v new_phrase="$NewStep" '/LevelSteps=/{ print new_phrase; next } 1' AutomaticBrightness.sh  > temp && mv temp AutomaticBrightness.sh
 fi
 
-echo "Cloning AutomaticBrighness.sh..."
+echo "Cloning AutomaticBrightness.sh..."
 sudo cp AutomaticBrightness.sh /usr/local/bin/AutomaticBrightness.sh
 sudo chmod u+x /usr/local/bin/AutomaticBrightness.sh
 
@@ -52,7 +52,7 @@ echo "Cloning AB.service for systemD..."
 sudo cp AB.service /etc/systemd/system/AB.service
 
 
-echo "Startin Service..."
+echo "Starting Service..."
 sudo systemctl enable AB
 sudo systemctl start AB
 

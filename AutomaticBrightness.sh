@@ -1,18 +1,18 @@
 #!/bin/bash
 
-#How much light change must be seen by the sensor befor it will act
+#How much light change must be seen by the sensor before it will act
 LightChange=10
 
 #How often it check the sensor
 SensorDelay=1
 
-# Scale sesor to displas brightness range
+# Scale sensor to display brightness range
 # NOW WITH FLOAT SUPPORT
 SensorToDisplayScale=24.09
 
 # 12 steps is the most similar on a Macbook 2017 running Arch compared to MacOS
 LevelSteps=12
-# Playes the 12 stesp effectivly at 30 FPS 32ms
+# Plays the 12 step effectively at 30 FPS 32ms
 AnimationDelay=0.032
 
 
@@ -21,11 +21,11 @@ MinimumBrightness=001
 
 
 
-# 2 : Default | 1 : Add Offset | 0 : Subtract Offset, Recomended not to change
+# 2 : Default | 1 : Add Offset | 0 : Subtract Offset, Recommended not to change
 op=2
 
 
-# Only look for flags -i or -d with an aditional value
+# Only look for flags -i or -d with an additional value
 # AutomaticBrightness.sh -i 100
 while getopts i:d: flag
 do
@@ -37,7 +37,7 @@ do
     esac
 done
 
-# Verigy offset file exsits and if so read it
+# Verify offset file exists and if so read it
 if [[ -f /dev/shm/AB.offset ]]
 then
   OffSet=$(cat /dev/shm/AB.offset)
@@ -50,7 +50,7 @@ fi
 #if no offset or its less than 0 make 0
 OffSet=$((OffSet < 0 ? 0 : OffSet))
 
-# relativly change number in Offset file and write it
+# relatively change number in Offset file and write it
 if [[ $op -lt 2 ]]
 then
   if [[ $op -eq 1 ]]
@@ -117,15 +117,15 @@ do
 
 		  CurrentBrightness=$(cat $BLightPath)
 
-      # Add MinimumBrighness here to not effect comparison but the outcome
+      # Add MinimumBrightness here to not effect comparison but the outcome
       Light=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; $Light +  (  ($MaxScreenBrightness  * ( $MinimumBrightness / 100 )) / $SensorToDisplayScale )  " | bc ))
       
-      # Gernate a TempLight value for the screen to be set to
+      # Generate a TempLight value for the screen to be set to
       # Float math thanks Matthias_Wachter 
       TempLight=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; $Light * $SensorToDisplayScale" | bc))
 
 
-      # Check we dont ask the screen to go brighter than it can
+      # Check we do not ask the screen to go brighter than it can
 		  if [[ $TempLight -gt $MaxScreenBrightness ]]
 		  then
 			  NewLight=$MaxScreenBrightness
@@ -133,7 +133,7 @@ do
 			  NewLight=$TempLight
 		  fi
 
-      # How diffrent should each stop be
+      # How different should each stop be
       DiffCount=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; ( $NewLight - $CurrentBrightness ) / $LevelSteps" | bc ))
 
       # Step once per Screen Hz to make animation
@@ -156,7 +156,7 @@ do
                   echo $FakeLight > $BLightPath
               fi
 
-        # Format values apropriatly for brightnessctl
+        # Format values appropriately for brightnessctl
 			  #if [[ $NewLight -lt 0 ]]
 			  #then
 			  #NewLight=$( echo "$NewLight" | awk -F "-" {'print$2'})
@@ -165,7 +165,7 @@ do
 			  #NewLight=$(echo +$NewLight)
 			  #fi
 
-        # Adjust brightness relativly
+        # Adjust brightness relatively
 			  #brightnessctl -q s $NewLight
         # Sleep for the screen Hz time so he effect is visible
 			  sleep $AnimationDelay
