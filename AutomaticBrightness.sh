@@ -19,7 +19,6 @@ AnimationDelay=0.032
 # Read the variable names
 MinimumBrightness=001
 
-
 # Keyboard Stuff
 EnableKBControl=true
 
@@ -27,7 +26,7 @@ EnableKBControl=true
 KBMaxBrightness=80
 
 # Screen brightness in % to turnoff backlight
-KBCutoff=50
+KBScreenCutoff=50
 
 
 # 2 : Default | 1 : Add Offset | 0 : Subtract Offset, Recommended not to change
@@ -102,9 +101,8 @@ MaxKBBrightness=$(cat  /sys/class/leds/chromeos::kbd_backlight/max_brightness)
 KBLightPath=/sys/class/leds/chromeos::kbd_backlight/brightness
 
 
-
 #Set the current light value so we have something to compare to
-OldLight=$(cat $LSensorPath)
+OldSensorLight=$(cat $LSensorPath)
 
 while true
 do
@@ -123,84 +121,104 @@ do
 
     # Set allowed range for light 
     
-    MaxOld=$((OldLight + OldLight/LightChange))
-    MinOld=$((OldLight - OldLight/LightChange))
+    MaxOld=$((OldSensorLight + OldSensorLight/LightChange))
+    MinOld=$((OldSensorLight - OldSensorLight/LightChange))
 
 
     if [[ $Light -gt $MaxOld ]] || [[ $Light -lt $MinOld ]]
     then
 
       # Store new light as old light for next comparison
-      OldLight=$Light
+      OldSensorLight=$Light
 
       CurrentBrightness=$(cat $BLightPath)
 
       # Add MinimumBrightness here to not effect comparison but the outcome
       Light=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; $Light +  (  ($MaxScreenBrightness  * ( $MinimumBrightness / 100 )) / $SensorToDisplayScale )  " | bc ))
       
-      # Generate a TempLight value for the screen to be set to
+      # Generate a TempBackLight value for the screen to be set to
       # Float math thanks Matthias_Wachter 
-      TempLight=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; $Light * $SensorToDisplayScale" | bc))
+      TempBackLight=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; $Light * $SensorToDisplayScale" | bc))
 
       # Check that we dont ask the screen to go brighter than it can
-      if [[ $TempLight -gt $MaxScreenBrightness ]]
+      if [[ $TempBackLight -gt $MaxScreenBrightness ]]
       then
-          NewLight=$MaxScreenBrightness
-          KBNew=0
+          NewBackLight=$MaxScreenBrightness
+          KBLightNew=0
       else
-          NewLight=$TempLight
+          NewBackLight=$TempBackLight
           # Calculate Keyboard Backlight value for screen brightness
-          KBNew=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; ( 1 - ( $NewLight / $MaxScreenBrightness ) ) * $KBMaxBrightness  " | bc ))
+          KBLightNew=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; ( 1 - ( $NewBackLight / $MaxScreenBrightness ) ) * $KBMaxBrightness  " | bc ))
       fi
 
     
 
         # Get new screen brightness as a % and then set the keyboard using its limits
-      ScreenPrecentage=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; ( $NewLight / $MaxScreenBrightness  ) * 100  " | bc ))
-      if [[ $KBCutoff -gt ScreenPrecentage ]]
-      then 
-          # Limit Keyboard Brightness
-          if [[ $KBNew -gt $KBMaxBrightness ]]
-          then
-              KBNew=$KBMaxBrightness
-          fi
-
-      else
-          KBNew=0
-      fi
+      ScreenPrecentage=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; ( $NewBackLight / $MaxScreenBrightness  ) * 100  " | bc ))
 
 
           
-      # How different should each stop be
-      DiffCount=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; ( $NewLight - $CurrentBrightness ) / $LevelSteps" | bc ))
+      # How different should each step be
+      DiffCount=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; ( $NewBackLight - $CurrentBrightness ) / $LevelSteps" | bc ))
+       
+      # Calculate Keyboard step
+      CurrentKBBrightness=$(cat $KBLightPath)
+      KBDiffCount=$(LC_NUMERIC=C printf "%.0f" $(echo "scale=2; ( $KBLightNew - $CurrentKBBrightness ) / $LevelSteps" | bc ))
 
       # Step once per Screen Hz to make animation
 		  for i in $(eval echo {1..$LevelSteps} )
 		  do
 
-        # Set new relative light value
-			  NewLight=$(( $DiffCount ))
+            # Set new relative light value
+			  NewBackLight=$(( $DiffCount ))
 
 
-
+                # Get current screen brightness
               CurrentBrightness=$(cat $BLightPath)
-              FakeLight=$(( $NewLight + $CurrentBrightness))
 
-              if [[ $FakeLight -gt $MaxScreenBrightness ]]
+              FakeBackLight=$(( $NewBackLight + $CurrentBrightness))
+
+              if [[ $FakeBackLight -gt $MaxScreenBrightness ]]
               then
-                  NewLight=$MaxScreenBrightness
-                  echo "ERROR"
+                  NewBackLight=$MaxScreenBrightness
+                  echo "ERROR : ATTEMPTED TO MAKE SCREEN TO BRIGHT!!"
               else
-                  echo $FakeLight > $BLightPath
+                  echo $FakeBackLight > $BLightPath
               fi
+
+            
+              # KEYBOARD LOGIC
+              if [[ $EnableKBControl ]]
+              then
+                  KBLightNew=$(( $KBDiffCount ))
+
+                  CurrentKBBrightness=$(cat $KBLightPath)
+                  FakeKBLight=$(( $KBLightNew + $CurrentKBBrightness))
+
+                  if [[ $KBScreenCutoff -gt ScreenPrecentage ]]
+                  then 
+                      # Limit Keyboard Brightness
+                      if [[ $FakeKBLight -gt $KBMaxBrightness ]]
+                      then
+                          FakeKBLight=$KBMaxBrightness
+                      fi
+
+                  else
+                      FakeKBLight=0
+                  fi
+
+
+                  echo $FakeKBLight > $KBLightPath
+
+              fi
+
+
+            
+              #time for animation
 			  sleep $AnimationDelay
 
 		  done
 
-          if [[ $EnableKBControl ]]
-          then
-              echo $KBNew > $KBLightPath
-          fi
       
     fi
    
